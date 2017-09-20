@@ -19,7 +19,8 @@ The official Node.js library for the [Coinbase API](https://developers.coinbase.
 
 Version | GitHub repository
 --------|------------------
-`2.0.x` | This repository
+`3.0.x` | This repository
+`2.0.x` | [coinbase/coinbase-node](https://github.com/coinbase/coinbase-node)
 `0.1.x` | [mateodelnorte/coinbase](https://github.com/mateodelnorte/coinbase)
 
 Npm `coinbase` package name used to refer to the unofficial [coinbase](https://github.com/mateodelnorte/coinbase) library maintained by [Matt Walters](https://github.com/mateodelnorte). Matt graciously allowed us to use the name for this package instead. You can still find that package on [Github](https://github.com/mateodelnorte/coinbase). Thanks, Matt.
@@ -31,7 +32,6 @@ The first thing you'll need to do is [sign up for coinbase](https://coinbase.com
 ## API Key
 
 If you're writing code for your own Coinbase account, [enable an API key](https://coinbase.com/settings/api). Next, create a ``Client`` object for interacting with the API:
-
 
 ```javascript
 var Client = require('coinbase').Client;
@@ -52,20 +52,21 @@ var client = new Client({'accessToken': accessToken, 'refreshToken': refreshToke
 
 With a `client instance`, you can now make API calls. We've included some examples below, but in general the library has Javascript prototypes for each of the objects described in our [REST API documentation](https://developers.coinbase.com/api/v2).  These classes each have methods for making the relevant API calls; for instance, ``coinbase.model.Transaction.complete`` maps to the [complete bitcoin request](https://developers.coinbase.com/api/v2#complete-request-money) API endpoint. The comments of each method in the code references the endpoint it implements. Each API method returns an ``object`` representing the JSON response from the API.
 
-**Listing available accounts**
+### Listing available accounts
 
 ```javascript
 var coinbase = require('coinbase');
 var client   = new coinbase.Client({'apiKey': mykey, 'apiSecret': mysecret});
 
-client.getAccounts({}, function(err, accounts) {
+async () => {
+  let accounts = await client.getAccounts();
   accounts.forEach(function(acct) {
     console.log('my bal: ' + acct.balance.amount + ' for ' + acct.name);
   });
-});
+}();
 ```
 
-**Get Balance from an Account Id**
+### Get Balance from an Account Id
 
 ```javascript
 var coinbase = require('coinbase');
@@ -76,7 +77,7 @@ client.getAccount('<ACCOUNT ID>', function(err, account) {
 });
 ```
 
-**Selling bitcoin**
+### Selling bitcoin
 
 ```javascript
 var args = {
@@ -88,7 +89,7 @@ account.sell(args, function(err, xfer) {
 });
 ```
 
-**Sending bitcoin**
+### Sending bitcoin
 
 ```javascript
 var args = {
@@ -102,7 +103,7 @@ account.sendMoney(args, function(err, txn) {
 });
 ```
 
-**Requesting bitcoin**
+### Requesting bitcoin
 
 ```javascript
 var args = {
@@ -116,7 +117,7 @@ account.requestMoney(args, function(err, txn) {
 });
 ```
 
-**Listing current transactions**
+### Listing current transactions
 
 ```javascript
 account.getTransactions(null, function(err, txns) {
@@ -126,7 +127,7 @@ account.getTransactions(null, function(err, txns) {
 });
 ```
 
-**Using pagination**
+### Using pagination
 
 ```javascript
 account.getTransactions(null, function(err, txns, pagination) {
@@ -142,7 +143,7 @@ account.getTransactions(null, function(err, txns, pagination) {
 });
 ```
 
-**Checking bitcoin prices**
+### Checking bitcoin prices
 
 ```javascript
 client.getBuyPrice({'currencyPair': 'BTC-USD'}, function(err, obj) {
@@ -150,7 +151,8 @@ client.getBuyPrice({'currencyPair': 'BTC-USD'}, function(err, obj) {
 });
 ```
 
-**Verifying merchant callback authenticity**
+### Verifying merchant callback authenticity
+
 ```javascript
 if (client.verifyCallback(req.raw_body, req.headers['CB-SIGNATURE'])) {
   // Process callback
@@ -170,9 +172,9 @@ more information about error types [here](https://developers.coinbase.com/api/v2
 Any and all contributions are welcome! The process is simple:
 
 1. Fork this repo
-2. Make your changes and add tests
-3. Run the test suite
-4. Submit a pull request.
+1. Make your changes and add tests
+1. Run the test suite
+1. Submit a pull request.
 
 Tests are run via [mocha](http://mochajs.org) and [nock](https://github.com/pgte/nock). To run the tests, clone the repository and then:
 
@@ -190,6 +192,6 @@ nsp check --output summary
 You can also run the tests against various node environments using the Dockerfile.example file.
 
 1. `cp Dockerfile.example Dockerfile`
-2. edit Dockerfile and uncomment the node version that interests you
-3. `[sudo] docker build -t coinbase-node .`
-4. `[sudo] docker run -it coinbase-node`
+1. edit Dockerfile and uncomment the node version that interests you
+1. `[sudo] docker build -t coinbase-node .`
+1. `[sudo] docker run -it coinbase-node`
